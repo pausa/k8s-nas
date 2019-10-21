@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hassio
+spec:
+  selector:
+    app: hassio
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8123
+    nodePort: 8123

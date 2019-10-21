@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deluge
+  labels:
+    app: deluge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deluge
+  template:
+    metadata:
+      labels:
+        app: deluge
+    spec:
+      containers:
+      - name: deluge
+        image: linuxserver/deluge:latest
+        ports:
+        - containerPort: 8112
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+        - name: media
+          mountPath: /media
+        - name: localtime
+          mountPath: /etc/localtime
+      - name: openvpn
+        image: dperson/openvpn-client
+        volumeMounts:
+        - name: vpn
+          mountPath: /vpn
+        - name: tun
+          mountPath: /dev/net/tun
+        - name: localtime
+          mountPath: /etc/localtime
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
+        env:
+        - name: VPN_AUTH # hostname;username;password
+          valueFrom:
+            secretKeyRef:
+              name: vpn
+              key: VPN_AUTH
+        args: 
+        - -r 
+        - 192.168.178.0/24
+        - -v 
+        - $(VPN_AUTH)
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/deluge
+          type: DirectoryOrCreate
+      - name: downloads
+        hostPath: 
+          path: /home/pausa/media/private
+          type: DirectoryOrCreate
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: DirectoryOrCreate
+      - name: vpn
+        hostPath: 
+          path: /home/pausa/.config/vpn
+          type: DirectoryOrCreate
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File

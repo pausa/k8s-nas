@@ -1,0 +1,373 @@
+resources:
+  - type: js
+    url: /local/vertical-stack-in-card.js?v=0.1.3
+title: Home
+views:
+  - badges: []
+    cards:
+      - cards:
+          - cards:
+              - entity: switch.salotto
+                hold_action:
+                  action: none
+                icon: 'mdi:sofa'
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: toggle
+                type: entity-button
+              - entity: switch.gufo
+                hold_action:
+                  action: none
+                icon: 'mdi:owl'
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: toggle
+                type: entity-button
+            type: horizontal-stack
+          - cards:
+              - cards:
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:television-play'
+                    name: Android TV
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.turn_on
+                      service_data:
+                        activity: TV
+                    type: entity-button
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:laptop-windows'
+                    name: Laptop
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.turn_on
+                      service_data:
+                        activity: PC
+                    type: entity-button
+                type: horizontal-stack
+            type: 'custom:vertical-stack-in-card'
+        type: vertical-stack
+      - cards:
+          - cards:
+              - cards:
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:power'
+                    name: Power
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.send_command
+                      service_data:
+                        command: PowerToggle
+                        device: JVC TV
+                    type: entity-button
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:volume-mute'
+                    name: Mute
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.send_command
+                      service_data:
+                        command: Mute
+                        device: JVC TV
+                    type: entity-button
+                type: horizontal-stack
+            type: 'custom:vertical-stack-in-card'
+          - cards:
+              - cards:
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:checkbox-blank-circle-outline'
+                    show_icon: false
+                    show_name: false
+                    tap_action:
+                      action: none
+                    type: entity-button
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:keyboard-return'
+                    show_icon: false
+                    show_name: false
+                    tap_action:
+                      action: none
+                    type: entity-button
+                type: horizontal-stack
+            type: 'custom:vertical-stack-in-card'
+        type: horizontal-stack
+      - cards:
+          - cards:
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:volume-plus'
+                name: VolumeUp
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:chevron-up'
+                name: Up
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: DirectionUp
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:checkbox-blank-circle-outline'
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+            type: horizontal-stack
+          - cards:
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                name: OK
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:chevron-up'
+                name: Up
+                show_icon: false
+                show_name: false
+                show_state: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: DirectionUp
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                name: empty
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+            type: horizontal-stack
+          - cards:
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:chevron-left'
+                name: Left
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: DirectionLeft
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: Menu
+                    device: Xiaomi Lettore multimediale
+                icon: 'mdi:check'
+                name: OK
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: OK
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:chevron-right'
+                name: Right
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: DirectionRight
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+            type: horizontal-stack
+          - cards:
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                name: OK
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:chevron-down'
+                name: Down
+                show_icon: false
+                show_name: false
+                show_state: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: DirectionDown
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                name: empty
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+            type: horizontal-stack
+          - cards:
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:volume-minus'
+                name: VolumeDown
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:chevron-down'
+                name: Down
+                show_icon: true
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: remote.send_command
+                  service_data:
+                    command: DirectionDown
+                    device: Xiaomi Lettore multimediale
+                type: entity-button
+              - entity: remote.harmony_hub
+                hold_action:
+                  action: none
+                icon: 'mdi:keyboard-return'
+                show_icon: false
+                show_name: false
+                tap_action:
+                  action: none
+                type: entity-button
+            type: horizontal-stack
+        type: 'custom:vertical-stack-in-card'
+      - cards:
+          - cards:
+              - cards:
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:volume-minus'
+                    name: VolumeDown
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.send_command
+                      service_data:
+                        command: VolumeDown
+                        device: Xiaomi Lettore multimediale
+                    type: entity-button
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:volume-plus'
+                    name: VolumeUp
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.send_command
+                      service_data:
+                        command: VolumeUp
+                        device: Xiaomi Lettore multimediale
+                    type: entity-button
+                type: horizontal-stack
+            type: 'custom:vertical-stack-in-card'
+          - cards:
+              - cards:
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:checkbox-blank-circle-outline'
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.send_command
+                      service_data:
+                        command: Home
+                        device: Xiaomi Lettore multimediale
+                    type: entity-button
+                  - entity: remote.harmony_hub
+                    hold_action:
+                      action: none
+                    icon: 'mdi:keyboard-return'
+                    show_icon: true
+                    show_name: false
+                    tap_action:
+                      action: call-service
+                      service: remote.send_command
+                      service_data:
+                        command: Return
+                        device: Xiaomi Lettore multimediale
+                    type: entity-button
+                type: horizontal-stack
+            type: 'custom:vertical-stack-in-card'
+        type: horizontal-stack
+    icon: 'mdi:home'
+    panel: false
+    path: default_view
+    title: Home

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hassio
+  labels:
+    app: hassio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hassio
+  template:
+    metadata:
+      labels:
+        app: hassio
+    spec:
+      containers:
+      - name: hassio
+        image: homeassistant/home-assistant:latest
+        ports:
+        - containerPort: 8123
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/hassio
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File

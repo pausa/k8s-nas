@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  labels:
+    app: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      containers:
+      - name: plex
+        image: linuxserver/plex:latest
+        ports:
+        - containerPort: 32400
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: media
+          mountPath: /media
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/plex
+          type: DirectoryOrCreate
+      - name: media
+        hostPath: 
+          path: /home/pausa/media/
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
