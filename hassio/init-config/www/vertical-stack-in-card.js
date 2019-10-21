@@ -1,3 +1,4 @@
+// https://github.com/custom-cards/vertical-stack-in-card
 class VerticalStackInCard extends HTMLElement {
     constructor() {
         super();
