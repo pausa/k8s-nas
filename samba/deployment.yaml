@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba
+  labels:
+    app: samba
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      containers:
+      - name: samba
+        image: dperson/samba:latest
+        ports:
+        - containerPort: 139
+        - containerPort: 445
+        volumeMounts:
+        - name: media
+          mountPath: /media
+        - name: localtime
+          mountPath: /etc/localtime
+        env:
+        - name: SMB_USER
+          valueFrom:
+            secretKeyRef:
+              name: samba
+              key: SMB_USER
+        args:
+        - -s
+        - media;/media;no;no;no;pausa
+        - -u
+        - $(SMB_USER)
+      volumes:
+      - name: media
+        hostPath: 
+          path: /home/pausa/media/
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
