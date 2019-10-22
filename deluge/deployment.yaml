@@ -28,6 +28,12 @@ spec:
           mountPath: /media
         - name: localtime
           mountPath: /etc/localtime
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /usr/bin/curl http://ifconfig.co/json 2>/dev/null | grep tiger
       - name: openvpn
         image: dperson/openvpn-client
         volumeMounts:
