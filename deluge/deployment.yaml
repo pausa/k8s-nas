@@ -57,6 +57,12 @@ spec:
         - 192.168.178.0/24
         - -v 
         - $(VPN_AUTH)
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /usr/bin/nslookup ams.tigerbackbone.com
       volumes:
       - name: config
         hostPath: 
