@@ -14,6 +14,8 @@ spec:
       labels:
         app: plex
     spec:
+      hostname: plex
+      subdomain: pausalenovo
       containers:
       - name: plex
         image: linuxserver/plex:latest
