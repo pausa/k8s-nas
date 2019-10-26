@@ -12,7 +12,7 @@ def as_root(){
 
   # putting custom conf in apiserver
   echo '# Custom Configuration' >> /var/snap/microk8s/current/args/kube-apiserver
-  echo '--service-node-port-range=100-32700' >> /var/snap/microk8s/current/args/kube-apiserver
+  echo '--service-node-port-range=100-60000' >> /var/snap/microk8s/current/args/kube-apiserver
   systemctl restart snap.microk8s.daemon-apiserver
 }
 

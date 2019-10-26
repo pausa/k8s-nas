@@ -11,3 +11,7 @@ spec:
     protocol: TCP
     port: 8112
     nodePort: 8112
+  - name: client
+    protocol: TCP
+    port: 58846
+    nodePort: 58846
