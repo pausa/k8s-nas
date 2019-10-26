@@ -14,11 +14,14 @@ spec:
       labels:
         app: deluge
     spec:
+      hostname: deluge
+      subdomain: pausalenovo
       containers:
       - name: deluge
         image: linuxserver/deluge:latest
         ports:
         - containerPort: 8112
+        - containerPort: 58846
         volumeMounts:
         - name: config
           mountPath: /config
@@ -29,11 +32,13 @@ spec:
         - name: localtime
           mountPath: /etc/localtime
         livenessProbe:
+          initialDelaySeconds: 10
+          timeoutSeconds: 60
           exec:
             command:
             - /bin/bash
             - -c
-            - /usr/bin/curl http://ifconfig.co/json 2>/dev/null | grep tiger
+            - /usr/bin/timeout 5 /usr/bin/curl http://ifconfig.co/json 2>/dev/null | grep tiger
       - name: openvpn
         image: dperson/openvpn-client
         volumeMounts:
@@ -58,11 +63,12 @@ spec:
         - -v 
         - $(VPN_AUTH)
         livenessProbe:
+          timeoutSeconds: 60
           exec:
             command:
             - /bin/bash
             - -c
-            - /usr/bin/nslookup ams.tigerbackbone.com
+            - /usr/bin/timeout 5 /usr/bin/nslookup ams.tigerbackbone.com
       volumes:
       - name: config
         hostPath: 
