@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aria2
+  labels:
+    app: aria2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aria2
+  template:
+    metadata:
+      labels:
+        app: aria2
+    spec:
+      hostname: aria2
+      subdomain: pausalenovo
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: aria2
+        image: opengg/aria2:latest
+        ports:
+        - containerPort: 6800
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: media
+          mountPath: /downloads
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/aria2
+          type: DirectoryOrCreate
+      - name: media
+        hostPath: 
+          path: /home/pausa/media/private
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
