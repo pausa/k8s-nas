@@ -26,6 +26,10 @@ spec:
         - name: localtime
           mountPath: /etc/localtime
         env:
+        - name: USERID
+          value: "1000"
+        - name: GROUPID
+          value: "1000"
         - name: SMB_USER
           valueFrom:
             secretKeyRef:

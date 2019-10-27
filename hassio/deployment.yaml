@@ -14,6 +14,9 @@ spec:
       labels:
         app: hassio
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
       - name: hassio
         image: homeassistant/home-assistant:latest

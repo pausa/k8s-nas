@@ -22,6 +22,11 @@ spec:
         ports:
         - containerPort: 8112
         - containerPort: 58846
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
         volumeMounts:
         - name: config
           mountPath: /config
@@ -49,6 +54,8 @@ spec:
         - name: localtime
           mountPath: /etc/localtime
         securityContext:
+          runAsUser: 0
+          runAsGroup: 0
           capabilities:
             add: ["NET_ADMIN"]
         env:
