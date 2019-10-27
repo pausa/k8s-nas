@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manga
+  labels:
+    app: manga
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manga
+  template:
+    metadata:
+      labels:
+        app: manga
+    spec:
+      hostname: manga
+      subdomain: pausalenovo
+      containers:
+      - name: manga
+        image: localhost:32000/manga-dl:latest
+        stdin: true
+        tty: true
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        volumeMounts:
+        - name: downloads
+          mountPath: /home/mangauser/manga
+        - name: localtime
+          mountPath: /etc/localtime
+      - name: openvpn
+        image: dperson/openvpn-client
+        volumeMounts:
+        - name: vpn
+          mountPath: /vpn
+        - name: tun
+          mountPath: /dev/net/tun
+        - name: localtime
+          mountPath: /etc/localtime
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          capabilities:
+            add: ["NET_ADMIN"]
+        env:
+        - name: VPN_AUTH # hostname;username;password
+          valueFrom:
+            secretKeyRef:
+              name: vpn
+              key: VPN_AUTH
+        args: 
+        - -v 
+        - $(VPN_AUTH)
+        livenessProbe:
+          timeoutSeconds: 60
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /usr/bin/timeout 5 /usr/bin/nslookup ams.tigerbackbone.com
+      volumes:
+      - name: downloads
+        hostPath: 
+          path: /home/pausa/media/books
+          type: DirectoryOrCreate
+      - name: vpn
+        hostPath: 
+          path: /home/pausa/.config/vpn
+          type: DirectoryOrCreate
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
