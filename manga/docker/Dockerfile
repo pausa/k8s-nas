@@ -16,6 +16,7 @@ RUN apk -U add python3 \
  jpeg-dev zlib-dev \
  libffi-dev openssl-dev \
  g++ \
+ nmap-ncat \
  bash 
 
 RUN pip3 install --upgrade pip

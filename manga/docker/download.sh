@@ -16,4 +16,4 @@ while read input
 do 
 	start $input
 	echo "listening for commands on port 30666" 
-done < <(nc -q -1 -k -l 30666)
+done < <(ncat -k -l 30666)

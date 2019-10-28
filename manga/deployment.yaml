@@ -19,8 +19,8 @@ spec:
       containers:
       - name: manga
         image: localhost:32000/manga-dl:latest
-        stdin: true
-        tty: true
+        ports:
+        - containerPort: 30666
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
@@ -29,6 +29,12 @@ spec:
           mountPath: /home/mangauser/manga
         - name: localtime
           mountPath: /etc/localtime
+        env:
+        - name: MANGA_PWD
+          valueFrom:
+            secretKeyRef:
+              name: manga
+              key: MANGA_PWD
       - name: openvpn
         image: dperson/openvpn-client
         volumeMounts:
@@ -50,6 +56,8 @@ spec:
               name: vpn
               key: VPN_AUTH
         args: 
+        - -r
+        - 192.168.178.0/24
         - -v 
         - $(VPN_AUTH)
         livenessProbe:
