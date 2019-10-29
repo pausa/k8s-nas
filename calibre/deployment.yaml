@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibre
+  labels:
+    app: calibre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calibre
+  template:
+    metadata:
+      labels:
+        app: calibre
+    spec:
+      hostname: calibre
+      subdomain: pausalenovo
+      containers:
+      - name: calibre
+        image: linuxserver/calibre:latest
+        ports:
+        - containerPort: 8080
+          name: guac
+        - containerPort: 8081
+          name: web
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: books
+          mountPath: /books
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/calibre
+          type: DirectoryOrCreate
+      - name: books
+        hostPath: 
+          path: /home/pausa/media/books
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
