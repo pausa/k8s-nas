@@ -1,5 +1,7 @@
 FROM alpine
-RUN apk -U add bash smartmontools ssmtp
-#COPY test.sh  /bin/test.sh
+RUN apk -U add bash smartmontools ssmtp ca-certificates
 COPY check.sh  /bin/check.sh
-ENTRYPOINT ["/bin/bash"]
+COPY init.sh /bin/init.sh
+COPY test.sh  /bin/test.sh
+ENTRYPOINT ["/bin/init.sh"]
+CMD ["/bin/bash"]
