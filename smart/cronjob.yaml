@@ -1,0 +1,108 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: smart-check
+  labels:
+    app: smart-check
+spec:
+  schedule: 0 12 * * 6
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostname: smart-check
+          subdomain: pausalenovo
+          restartPolicy: Never
+          containers:
+          - name: smart
+            image: localhost:32000/smart
+            volumeMounts:
+            - name: sda
+              mountPath: /scanning/sda
+          # - name: sdb
+          #   mountPath: /scanning/sdb
+            - name: localtime
+              mountPath: /etc/localtime
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              capabilities:
+                add: ["SYS_RAWIO"]
+            env:
+            - name: MAIL_TO
+              value: pausatep@gmail.com
+            - name: SMTP_SERVER
+              value: smtp.gmail.com:587
+            - name: MAIL_DOMAIN
+              value: gmail.com
+            - name: MAIL_USR
+              valueFrom:
+                secretKeyRef:
+                  name: smart
+                  key: MAIL_USR
+            - name: MAIL_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: smart
+                  key: MAIL_PWD
+            command: 
+            - /bin/check.sh 
+          volumes:
+          - name: sda
+            hostPath:
+              path: /dev/sda
+              type: BlockDevice
+        # - name: sdb
+        #   hostPath:
+        #     path: /dev/sdb
+        #     type: BlockDevice
+          - name: localtime
+            hostPath:
+              path: /etc/localtime
+              type: File
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: smart-test
+  labels:
+    app: smart-test
+spec:
+  schedule: 0 2 * * 6
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostname: smart-test
+          subdomain: pausalenovo
+          restartPolicy: Never
+          containers:
+          - name: smart
+            image: localhost:32000/smart
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 6
+              capabilities:
+                add: ["SYS_RAWIO", "SYS_RESOURCE", "SYS_ADMIN"]
+            volumeMounts:
+            - name: sda
+              mountPath: /scanning/sda
+          # - name: sdb
+          #   mountPath: /scanning/sdb
+            - name: localtime
+              mountPath: /etc/localtime
+            command: 
+            - /bin/test.sh 
+          volumes:
+          - name: sda
+            hostPath:
+              path: /dev/sda
+              type: BlockDevice
+        # - name: sdb
+        #   hostPath:
+        #     path: /dev/sdb
+        #     type: BlockDevice
+          - name: localtime
+            hostPath:
+              path: /etc/localtime
+              type: File
