@@ -1,0 +1,20 @@
+# Need to run some pods in privileged mode (like: SMART)
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: sudo
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  allowedCapabilities:
+  - '*'
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - '*'

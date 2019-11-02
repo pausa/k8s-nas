@@ -13,7 +13,10 @@ function as_root {
   # putting custom conf in apiserver
   echo '# Custom Configuration' >> /var/snap/microk8s/current/args/kube-apiserver
   echo '--service-node-port-range=100-60000' >> /var/snap/microk8s/current/args/kube-apiserver
-  systemctl restart snap.microk8s.daemon-apiserver
+  echo '--enable-admission-plugins=PodSecurityPolicy' >> /var/snap/microk8s/current/args/kube-apiserver
+  echo '--allow-privileged=true' >> /var/snap/microk8s/current/args/kube-apiserver
+
+  microk8s.stop && microk8s.start
 }
 
 sudo as_root

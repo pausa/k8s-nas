@@ -16,6 +16,7 @@ spec:
     spec:
       hostname: manga
       subdomain: pausalenovo
+      serviceAccountName: vpn
       containers:
       - name: manga
         image: localhost:32000/manga-dl:latest

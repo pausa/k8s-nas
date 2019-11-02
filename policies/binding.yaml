@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sudoers
+roleRef:
+  kind: ClusterRole
+  name: sudoer
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: smart
+  namespace: default
+- kind: ServiceAccount
+  name: vpn
+  namespace: default
+- kind: User
+  apiGroup: rbac.authorization.k8s.io
+  name: admin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: users
+roleRef:
+  kind: ClusterRole
+  name: user
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  apiGroup: rbac.authorization.k8s.io
+  name: system:authenticated

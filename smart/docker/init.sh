@@ -1,5 +1,6 @@
 #!/bin/bash
 ## Initializing config files based on env
+echo "creating /etc/ssmtp/ssmtp.conf"
 cat << EOF > /etc/ssmtp/ssmtp.conf
 root=$MAIL_TO
 mailhub=$SMTP_SERVER
@@ -14,4 +15,5 @@ AuthMethod=LOGIN
 FromLineOverride=Yes
 EOF
 
+echo "Finished initialization, starting: $@"
 $@

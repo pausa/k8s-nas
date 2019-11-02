@@ -16,6 +16,7 @@ spec:
     spec:
       hostname: deluge
       subdomain: pausalenovo
+      serviceAccountName: vpn
       containers:
       - name: deluge
         image: linuxserver/deluge:latest

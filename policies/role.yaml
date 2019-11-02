@@ -1,0 +1,27 @@
+# Creating a role for the sudo policy
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sudoer
+rules:
+- apiGroups: 
+  - policy
+  - extensions
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - sudo
+---
+# Creating a role for the normal user policy
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: user
+rules:
+- apiGroups: 
+  - policy
+  - extensions
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - user

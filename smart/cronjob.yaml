@@ -13,6 +13,7 @@ spec:
           hostname: smart-check
           subdomain: pausalenovo
           restartPolicy: Never
+          serviceAccountName: smart
           containers:
           - name: smart
             image: localhost:32000/smart
@@ -26,6 +27,7 @@ spec:
             securityContext:
               runAsUser: 0
               runAsGroup: 0
+              privileged: true
               capabilities:
                 add: ["SYS_RAWIO"]
             env:
@@ -45,7 +47,7 @@ spec:
                 secretKeyRef:
                   name: smart
                   key: MAIL_PWD
-            command: 
+            args: 
             - /bin/check.sh 
           volumes:
           - name: sda
@@ -76,14 +78,16 @@ spec:
           hostname: smart-test
           subdomain: pausalenovo
           restartPolicy: Never
+          serviceAccountName: smart
           containers:
           - name: smart
             image: localhost:32000/smart
             securityContext:
               runAsUser: 0
               runAsGroup: 6
+              privileged: true
               capabilities:
-                add: ["SYS_RAWIO", "SYS_RESOURCE", "SYS_ADMIN"]
+                add: ["SYS_RAWIO"]
             volumeMounts:
             - name: sda
               mountPath: /scanning/sda
@@ -91,7 +95,7 @@ spec:
           #   mountPath: /scanning/sdb
             - name: localtime
               mountPath: /etc/localtime
-            command: 
+            args: 
             - /bin/test.sh 
           volumes:
           - name: sda
