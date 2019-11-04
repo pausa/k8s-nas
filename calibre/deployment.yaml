@@ -24,6 +24,8 @@ spec:
           name: guac
         - containerPort: 8081
           name: web
+        - containerPort: 9090
+          name: conn
         env:
         - name: PUID
           value: "1000"
