@@ -1,0 +1,46 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backupper
+  labels:
+    app: backupper
+spec:
+  schedule: 0 * * * *
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostname: backupper
+          subdomain: pausalenovo
+          restartPolicy: Never
+          containers:
+          - name: backupper
+            image: localhost:32000/backupper
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+            volumeMounts:
+            - name: src
+              mountPath: /src
+            - name: dst
+              mountPath: /dst
+            - name: localtime
+              mountPath: /etc/localtime
+            env:
+            - name: SRC
+              value: /src/pausa
+            - name: DST
+              value: /dst/backup
+          volumes:
+          - name: src
+            hostPath:
+              path: /home
+              type: Directory
+          - name: dst
+            hostPath:
+              path: /media/usb0
+              type: Directory
+          - name: localtime
+            hostPath:
+              path: /etc/localtime
+              type: File
