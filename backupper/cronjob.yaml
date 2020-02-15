@@ -5,7 +5,7 @@ metadata:
   labels:
     app: backupper
 spec:
-  schedule: 0 * * * *
+  schedule: 0 */6 * * *
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:

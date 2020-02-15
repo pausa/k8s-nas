@@ -26,6 +26,8 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        - name: VERSION
+          value: docker
         volumeMounts:
         - name: config
           mountPath: /config

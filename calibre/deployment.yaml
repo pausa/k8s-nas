@@ -36,6 +36,8 @@ spec:
           mountPath: /config
         - name: books
           mountPath: /books
+        - name: external
+          mountPath: /external
         - name: localtime
           mountPath: /etc/localtime
       volumes:
@@ -47,6 +49,10 @@ spec:
         hostPath: 
           path: /home/pausa/media/books
           type: DirectoryOrCreate
+      - name: external
+        hostPath: 
+          path: /media
+          type: Directory
       - name: localtime
         hostPath:
           path: /etc/localtime
