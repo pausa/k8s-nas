@@ -36,6 +36,8 @@ spec:
               name: samba
               key: SMB_USER
         args:
+        - -g
+        - acl allow execute always = True
         - -s
         - media;/media;no;no;no;pausa
         - -u
