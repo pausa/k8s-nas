@@ -16,7 +16,6 @@ spec:
     spec:
       hostname: manga
       subdomain: pausalenovo
-      serviceAccountName: vpn
       containers:
       - name: manga
         image: localhost:32000/manga-dl:latest
@@ -36,46 +35,10 @@ spec:
             secretKeyRef:
               name: manga
               key: MANGA_PWD
-      - name: openvpn
-        image: dperson/openvpn-client
-        volumeMounts:
-        - name: vpn
-          mountPath: /vpn
-        - name: tun
-          mountPath: /dev/net/tun
-        - name: localtime
-          mountPath: /etc/localtime
-        securityContext:
-          runAsUser: 0
-          runAsGroup: 0
-          capabilities:
-            add: ["NET_ADMIN"]
-        env:
-        - name: VPN_AUTH # hostname;username;password
-          valueFrom:
-            secretKeyRef:
-              name: vpn
-              key: VPN_AUTH
-        args: 
-        - -r
-        - 192.168.178.0/24
-        - -v 
-        - $(VPN_AUTH)
-        livenessProbe:
-          timeoutSeconds: 60
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - /usr/bin/timeout 5 /usr/bin/nslookup ams.tigerbackbone.com
       volumes:
       - name: downloads
         hostPath: 
           path: /home/pausa/media/books
-          type: DirectoryOrCreate
-      - name: vpn
-        hostPath: 
-          path: /home/pausa/.config/vpn
           type: DirectoryOrCreate
       - name: tun
         hostPath:

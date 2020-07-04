@@ -7,7 +7,39 @@ spec:
     app: plex
   type: NodePort
   ports:
-  - name: http
+  - name: plex1
     protocol: TCP
     port: 32400
     nodePort: 32400
+  - name: plex2
+    protocol: TCP
+    port: 3005
+    nodePort: 3005
+  - name: plex3
+    protocol: TCP
+    port: 8324
+    nodePort: 8324
+  - name: plex4
+    protocol: TCP
+    port: 32469
+    nodePort: 32469
+  - name: plex5
+    protocol: UDP
+    port: 1900
+    nodePort: 1900
+  - name: plex6
+    protocol: UDP
+    port: 32410
+    nodePort: 32410
+  - name: plex7
+    protocol: UDP
+    port: 32412
+    nodePort: 32412
+  - name: plex8
+    protocol: UDP
+    port: 32413
+    nodePort: 32413
+  - name: plex9
+    protocol: UDP
+    port: 32414
+    nodePort: 32414
