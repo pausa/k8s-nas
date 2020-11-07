@@ -18,3 +18,7 @@ spec:
     rule: RunAsAny
   volumes:
   - '*'
+  hostNetwork: true
+  hostPorts:
+  - min: 0
+    max: 65535

@@ -13,6 +13,9 @@ subjects:
 - kind: ServiceAccount
   name: vpn
   namespace: default
+- kind: ServiceAccount
+  name: nginx-ingress-microk8s-serviceaccount
+  namespace: ingress
 - kind: User
   apiGroup: rbac.authorization.k8s.io
   name: admin
