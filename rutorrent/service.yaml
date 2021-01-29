@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rutorrent
+spec:
+  selector:
+    app: rutorrent
+  type: NodePort
+  ports:
+  - name: flood
+    protocol: TCP
+    port: 3000
+    nodePort: 8112
+  - name: rutorrent
+    protocol: TCP
+    port: 443
+    nodePort: 8113
+  - name: torrent-tcp
+    protocol: TCP
+    port: 51415
+    nodePort: 58846
+  - name: torrent-udp
+    protocol: UDP
+    port: 51415
+    nodePort: 58846

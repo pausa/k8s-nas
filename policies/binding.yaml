@@ -16,6 +16,9 @@ subjects:
 - kind: ServiceAccount
   name: nginx-ingress-microk8s-serviceaccount
   namespace: ingress
+- kind: ServiceAccount
+  name: coredns
+  namespace: kube-system
 - kind: User
   apiGroup: rbac.authorization.k8s.io
   name: admin

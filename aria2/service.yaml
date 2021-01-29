@@ -11,3 +11,11 @@ spec:
     protocol: TCP
     port: 6800
     nodePort: 6800
+  - name: torrent-tcp
+    protocol: TCP
+    port: 6801
+    nodePort: 6801
+  - name: torrent-udp
+    protocol: UDP
+    port: 6801
+    nodePort: 6801
