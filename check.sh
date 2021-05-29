@@ -22,13 +22,13 @@ function test_files -a dir max_files
 end
 
 function test_job -a job_name expected_status
-	set job_status (kubectl get pod | grep $job_name | tail -1 | awk '{print $3}')
+	set job_status (microk8s.kubectl get pod | grep $job_name | tail -1 | awk '{print $3}')
 	return (test "$job_status" = $expected_status)
 end
 
 function test_vpn
 	set host_ip (curl -4 ifconfig.co 2> /dev/null)
-	set pod_ip (kubectl exec service/rutorrent -- curl -4 ifconfig.co 2> /dev/null)
+	set pod_ip (microk8s.kubectl exec service/rutorrent -- curl -4 ifconfig.co 2> /dev/null)
 	echo $host_ip $pod_ip
 	return (test "$host_ip" != "$pod_ip")
 end
@@ -47,7 +47,7 @@ test_nas "test_date $stow_home/stow-antonio 3" 'Work backup more recent than 3 d
 test_nas "test_files $stow_home/stow-antonio 5000" 'Work backup less than 5000 files'
 echo
 echo "Kubernetes Cluster:"
-test_nas "kubectl version" 'Kubernetes online'
+test_nas "microk8s.kubectl version" 'Kubernetes online'
 test_nas "nc -z localhost 32400" 'Plex online'
 test_nas "nc -z localhost 139" 'Samba online'
 test_nas "nc -z localhost 8112" 'Torrent online'
@@ -57,8 +57,8 @@ echo "SMART:"
 test_nas "test_job smart-check Completed && test_job smart-test Completed" 'SMART checks running'
 
 echo "Short output:"
-kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs kubectl logs | grep --color=never /scanning
+microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep --color=never /scanning
 echo
-kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs kubectl logs | grep Extended | head -10
+microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep Extended | head -10
 
 

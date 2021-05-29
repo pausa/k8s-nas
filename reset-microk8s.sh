@@ -4,7 +4,7 @@
 
 function as_root {
   # installing
-  snap remove microk8s
+  snap remove microk8s --purge
   snap install microk8s --classic
 
   # enabling plugins
@@ -19,5 +19,5 @@ function as_root {
   microk8s.stop && microk8s.start
 }
 
-sudo as_root
+sudo bash -c "$(declare -f as_root); as_root"
 ./apply-all.sh
