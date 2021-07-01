@@ -33,7 +33,8 @@ function test_vpn
 	return (test "$host_ip" != "$pod_ip")
 end
 
-set stow_home /media/usb0/backup/media/backup
+#set stow_home /media/usb0/backup/media/backup
+set stow_home $HOME/media/backup
 
 echo "Disks:"
 test_nas 'mount | grep -q usb0' 'External drive mounted'
@@ -48,9 +49,9 @@ test_nas "test_files $stow_home/stow-antonio 5000" 'Work backup less than 5000 f
 echo
 echo "Kubernetes Cluster:"
 test_nas "microk8s.kubectl version" 'Kubernetes online'
-test_nas "nc -z localhost 32400" 'Plex online'
-test_nas "nc -z localhost 139" 'Samba online'
-test_nas "nc -z localhost 8112" 'Torrent online'
+test_nas "nc -w 5 -z localhost 32400" 'Plex online'
+test_nas "nc -w 5 -z localhost 139" 'Samba online'
+test_nas "nc -w 5 -z localhost 8112" 'Torrent online'
 test_nas 'test_vpn' 'VPN running for torrent pod'
 echo
 echo "SMART:"
