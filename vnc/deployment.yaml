@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vnc
+  labels:
+    app: vnc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vnc
+  template:
+    metadata:
+      labels:
+        app: vnc
+    spec:
+      hostname: vnc
+      subdomain: pausalenovo
+      containers:
+      - name: vnc
+        image: localhost:32000/vnc:latest
+        ports:
+        - containerPort: 5900
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        volumeMounts:
+        - name: media
+          mountPath: /workspace/media
+        - name: home
+          mountPath: /workspace/home
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: DirectoryOrCreate
+      - name: media
+        hostPath: 
+          path: /home/pausa/.config/vnc
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
