@@ -2,6 +2,6 @@
 
 set -x DISPLAY :1
 
-Xvfb "$DISPLAY" -screen 0 1024x768x24 &
+Xvfb "$DISPLAY" -screen 0 1920x1080x24 &
 x11vnc -forever &
 startxfce4

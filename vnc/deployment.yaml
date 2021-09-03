@@ -19,6 +19,10 @@ spec:
       containers:
       - name: vnc
         image: localhost:32000/vnc:latest
+        resources:
+          limits:
+            cpu: 2
+            memory: 4G
         ports:
         - containerPort: 5900
         securityContext:
@@ -36,7 +40,7 @@ spec:
         hostPath: 
           path: /home/pausa/media
           type: DirectoryOrCreate
-      - name: media
+      - name: home
         hostPath: 
           path: /home/pausa/.config/vnc
           type: Directory
