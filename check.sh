@@ -1,17 +1,20 @@
 #!/usr/bin/env fish
 
 function test_nas -a condition message
-	set_color (eval $condition &> /dev/null && echo "green" || echo "red")
+	eval $condition &> /dev/null
+	set result $status
+	set_color (test $result -eq 0 && echo "green" || echo "red")
 	echo "$message"
 	set_color normal
+	return $result
 end
 
 function test_disk -a dir perc
 	return (df -hP $dir | tail -1 | awk '{print int($5)}' | xargs test $perc -gt)
 end
 
-function test_date -a dir max_days
-	set date_dir (date -r $dir '+%s')
+function test_date -a max_days
+	set date_dir (date -d (cat /media/usb0/backup/backup-time) '+%s')
 	set date_now (date '+%s')
 	set diff_days (math "($date_now - $date_dir) / (60 * 60 * 24)")
 	return (test "$diff_days" -lt "$max_days")
@@ -33,26 +36,22 @@ function test_vpn
 	return (test "$host_ip" != "$pod_ip")
 end
 
-#set stow_home /media/usb0/backup/media/backup
-set stow_home $HOME/media/backup
-
 echo "Disks:"
 test_nas 'mount | grep -q usb0' 'External drive mounted'
 test_nas 'test_disk /home/pausa 90' 'More than 10% on main disk'
 test_nas 'test_disk /media/usb0/backup 90' 'More than 10% on external disk'
 echo
 echo "Backup"
-test_nas "test_date $stow_home/stow-play 3" 'Personal backup more recent than 3 days'
-test_nas "test_files $stow_home/stow-play 5000" 'Personal backup less than 5000 files'
-test_nas "test_date $stow_home/stow-antonio 3" 'Work backup more recent than 3 days'
-test_nas "test_files $stow_home/stow-antonio 5000" 'Work backup less than 5000 files'
+test_nas "test_date 3" 'Personal backup more recent than 3 days'
 echo
 echo "Kubernetes Cluster:"
 test_nas "microk8s.kubectl version" 'Kubernetes online'
 test_nas "nc -w 5 -z localhost 32400" 'Plex online'
+test_nas "nc -w 5 -z localhost 19090" 'Dashboard online'
+test_nas "nc -w 5 -z localhost 19091" 'File browser online'
 test_nas "nc -w 5 -z localhost 139" 'Samba online'
 test_nas "nc -w 5 -z localhost 8112" 'Torrent online'
-test_nas 'test_vpn' 'VPN running for torrent pod'
+and test_nas 'test_vpn' 'VPN running for torrent pod'
 echo
 echo "SMART:"
 test_nas "test_job smart-check Completed && test_job smart-test Completed" 'SMART checks running'

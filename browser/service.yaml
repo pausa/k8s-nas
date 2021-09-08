@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: browser
+spec:
+  selector:
+    app: browser
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    nodePort: 19091
