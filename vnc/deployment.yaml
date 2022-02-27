@@ -20,9 +20,12 @@ spec:
       - name: vnc
         image: localhost:32000/vnc:latest
         resources:
+          requests:
+            cpu: 4
+            memory: 8G
           limits:
-            cpu: 2
-            memory: 4G
+            cpu: 4
+            memory: 8G
         ports:
         - containerPort: 5900
         securityContext:

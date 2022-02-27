@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns
+  labels:
+    app: dns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dns
+  template:
+    metadata:
+      labels:
+        app: dns
+    spec:
+      hostname: dns
+      subdomain: pausalenovo
+      containers:
+      - name: dns
+        image: localhost:32000/bind:latest
+        ports:
+        - containerPort: 53
+        env:
+        - name: ALLOW_QUERY
+          value: any
+        - name: EXTRA_HOSTS
+          value: main.local.pausa=192.168.178.20,server.local.pausa=192.168.178.200,pi.local.pausa=192.168.178.37,main.zero.pausa=172.22.158.69,server.zero.pausa=172.22.159.47
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File

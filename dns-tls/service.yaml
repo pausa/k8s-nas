@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dns-tls
+spec:
+  selector:
+    app: dns-tls
+  type: NodePort
+  ports:
+  - name: http2
+    protocol: TCP
+    port: 853
+    nodePort: 853
