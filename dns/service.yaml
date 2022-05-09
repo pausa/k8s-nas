@@ -10,8 +10,8 @@ spec:
   - name: http
     protocol: UDP
     port: 53
-    nodePort: 53
+    nodePort: 8053
   - name: http2
     protocol: TCP
     port: 53
-    nodePort: 53
+    nodePort: 8053
