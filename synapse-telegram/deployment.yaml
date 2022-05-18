@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-telegram
+  labels:
+    app: synapse-telegram
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse-telegram
+  template:
+    metadata:
+      labels:
+        app: synapse-telegram
+    spec:
+      hostname: synapse-telegram
+      subdomain: pausalenovo
+      containers:
+      - name: synapse-telegram
+        image: dock.mau.dev/mautrix/telegram:latest
+        ports:
+        - containerPort: 29317
+        env:
+        - name: UID
+          value: "1000"
+        - name: GID
+          value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /data
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: config
+        hostPath:
+          path: /home/pausa/.config/synapse-telegram
+          type: DirectoryOrCreate
+          # TODO liveness probe

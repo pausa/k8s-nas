@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-telegram
+spec:
+  selector:
+    app: synapse-telegram
+  ports:
+  - name: http
+    port: 29317
