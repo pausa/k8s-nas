@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: synapse-whatsapp
+spec:
+  selector:
+    app: synapse-whatsapp
+  ports:
+  - name: http
+    port: 29317
