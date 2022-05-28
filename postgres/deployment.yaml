@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      hostname: postgres
+      subdomain: pausalenovo
+      containers:
+      - name: postgres
+        image: postgres:latest
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - secretRef:
+            name: postgres
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: passwd
+          mountPath: /etc/passwd
+          readOnly: true
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: data
+        hostPath:
+          path: /home/pausa/media/db/postgres
+          type: DirectoryOrCreate
+      - name: passwd
+        hostPath:
+          path: /etc/passwd
+          type: File
+          # TODO liveness probe
