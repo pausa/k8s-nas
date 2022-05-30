@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse-instagram
+  labels:
+    app: synapse-instagram
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse-instagram
+  template:
+    metadata:
+      labels:
+        app: synapse-instagram
+    spec:
+      hostname: synapse-instagram
+      subdomain: pausalenovo
+      containers:
+      - name: synapse-instagram
+        image: dock.mau.dev/mautrix/instagram:latest
+        ports:
+        - containerPort: 29317
+        env:
+        - name: UID
+          value: "1000"
+        - name: GID
+          value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /data
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: config
+        hostPath:
+          path: /home/pausa/.config/synapse-instagram
+          type: DirectoryOrCreate
+          # TODO liveness probe
