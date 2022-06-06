@@ -40,6 +40,13 @@ spec:
           mountPath: /etc/localtime
         - name: certs
           mountPath: /certs
+        livenessProbe:
+          httpGet:
+            path: /_matrix/client/versions
+            port: 8448
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 5
       volumes:
       - name: localtime
         hostPath:
@@ -53,4 +60,3 @@ spec:
         hostPath: 
           path: /home/pausa/Private
           type: Directory
-          # TODO liveness probe

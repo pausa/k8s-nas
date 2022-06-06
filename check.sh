@@ -52,6 +52,7 @@ test_nas "nc -w 5 -z localhost 19091" 'File browser online'
 test_nas "nc -w 5 -z localhost 139" 'Samba online'
 test_nas "nc -w 5 -z localhost 8112" 'Torrent online'
 and test_nas 'test_vpn' 'VPN running for torrent pod'
+test_nas "nc -w 5 -z localhost 8448" 'Synapse online'
 echo
 echo "SMART:"
 test_nas "test_job smart-check Completed && test_job smart-test Completed" 'SMART checks running'
