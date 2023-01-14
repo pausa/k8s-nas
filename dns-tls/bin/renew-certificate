@@ -1,0 +1,7 @@
+#!/usr/bin/env fish
+docker run -it --rm --name certbot \
+            -v "/etc/letsencrypt:/etc/letsencrypt" \
+            -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+            -p80:80 certbot/certbot certonly -d madpausa.sytes.net --standalone --preferred-challenges http
+sudo cp /etc/letsencrypt/live/madpausa.sytes.net/privkey.pem /etc/letsencrypt/live/madpausa.sytes.net/fullchain.pem $HOME/Private/.
+sudo chown 1000:1000 $HOME/Private/*.pem

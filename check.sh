@@ -31,7 +31,7 @@ end
 
 function test_vpn
 	set host_ip (curl -4 ifconfig.co 2> /dev/null)
-	set pod_ip (microk8s.kubectl exec service/rutorrent -- curl -4 ifconfig.co 2> /dev/null)
+	set pod_ip (microk8s.kubectl exec service/vnc -- curl -4 ifconfig.co 2> /dev/null)
 	echo $host_ip $pod_ip
 	return (test "$host_ip" != "$pod_ip")
 end
@@ -50,8 +50,8 @@ test_nas "nc -w 5 -z localhost 32400" 'Plex online'
 test_nas "nc -w 5 -z localhost 19090" 'Dashboard online'
 test_nas "nc -w 5 -z localhost 19091" 'File browser online'
 test_nas "nc -w 5 -z localhost 139" 'Samba online'
-test_nas "nc -w 5 -z localhost 8112" 'Torrent online'
-and test_nas 'test_vpn' 'VPN running for torrent pod'
+test_nas "nc -w 5 -z localhost 5900" 'Vnc online'
+and test_nas 'test_vpn' 'VPN running for vnc pod'
 test_nas "nc -w 5 -z localhost 8448" 'Synapse online'
 echo
 echo "SMART:"
@@ -62,4 +62,5 @@ microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.
 echo
 microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep Extended | head -10
 
-
+echo "Last logins:"
+last | head -10

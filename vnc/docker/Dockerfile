@@ -1,56 +1,52 @@
-FROM ubuntu:20.04
+FROM archlinux:latest
 ARG UID
 
-# This makes sure that a user with the same UID as provided exists in the
+# This makes sure that a user with the same UID as provide: exists in the
 # machine. It saves some effort in forwarding X11
 RUN id -nu $UID || useradd -ms /bin/bash dev -u $UID
 RUN mkdir /workspace \
  && chown $UID /workspace \
- && usermod -d /workspace/home -m $(id -nu $UID)
+ && groupadd -r autologin \
+ && usermod -d /workspace/home -m $(id -nu $UID) -G wheel,autologin
 
-RUN apt-get -y update
+# installing yay
+RUN pacman -Sy --noconfirm --needed git base-devel
+RUN echo "Defaults:dev      !authenticate" >> /etc/sudoers
+RUN echo "dev   ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-RUN apt-get -y install \
-		fish \
-		vim \
-		x11-apps 
-
-# vnc stuff
-RUN apt-get -y install \
-        x11vnc \
-        xvfb 
-
-# xfce
-RUN apt-get -y install \
-        xfce4 --no-install-recommends \
-        dbus-x11 
-
-# firefox n stuff
-RUN apt-get -y install \
-        firefox \
-        ffmpeg \
-        wget 
-
-# XDM
-RUN mkdir /workspace/xdm
-WORKDIR /workspace/xdm
-RUN wget 'https://github.com/subhra74/xdm/releases/download/7.2.11/xdm-setup-7.2.11.tar.xz' -O xdm.tar.xz
-RUN tar -xvf xdm.tar.xz
-RUN ./install.sh
-
-# Hakuneko
-RUN mkdir /workspace/hakuneko
-WORKDIR /workspace/hakuneko
-RUN wget 'https://github.com/manga-download/hakuneko/releases/download/v6.1.7/hakuneko-desktop_6.1.7_linux_amd64.deb' -O haku.deb
-RUN apt-get -y install \
-    ./haku.deb \
-    libnss3
-
-RUN apt-get -y install fonts-noto-core fontconfig
-RUN apt-get -y install unzip
-
-# cleanup and wrap up
-RUN apt-get clean
-COPY entrypoint.sh /workspace/
+USER $UID
 WORKDIR /workspace/home
-ENTRYPOINT ["/workspace/entrypoint.sh"]
+RUN git clone https://aur.archlinux.org/yay.git \
+ && cd yay && makepkg -si --noconfirm
+
+# software needed
+RUN yay -Sy --noconfirm \
+    xorg xorg-xinit which \
+    xfce4 \
+    xf86-video-dummy \
+    x11vnc net-tools \
+    supervisor \
+    firefox \
+    xdman \
+    openvpn 
+
+COPY xinitrc /workspace/home/.xinitrc
+
+USER 0
+# Xorg in headless mode
+COPY 10-headless.conf /etc/X11/xorg.conf.d/10-headless.conf
+
+# Allow non-console users to run X
+# Adding startxfce to xinit
+RUN echo "allowed_users = anybody" > /etc/X11/Xwrapper.config 
+
+# Supervisord and xinit config
+COPY supervisord.conf /etc/supervisord.conf
+
+RUN dbus-uuidgen --ensure=/etc/machine-id
+
+
+ENTRYPOINT supervisord
+
+USER $UID
+RUN yay -Sy --noconfirm deluge-gtk

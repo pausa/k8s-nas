@@ -1,7 +1,6 @@
 KC=microk8s.kubectl
 DEPLOYMENT=$(shell basename $(PWD))
 LOGFLAGS=--all-containers -f
-BRIDGES=$(wildcard ../synapse-*)
 
 deploy: service deployment
 	@echo "done"
@@ -11,6 +10,9 @@ undeploy: clean-deployment
 
 clean: clean-deployment clean-service
 	@echo "done"
+
+dockerfile:
+	cd docker && ./docker.sh
 
 %:
 	$(KC) apply -f $*.yaml 
@@ -23,10 +25,8 @@ logs:
 	$(KC) logs deployment/$(DEPLOYMENT) $(LOGFLAGS)
 
 list:
-	$(KC) get pods -l app=$(DEPLOYMENT)
+	$(KC) get pods -l app=$(DEPLOYMENT) -w
 
 exec:
 	$(KC) exec -it deployment/$(DEPLOYMENT) -- bash
 
-verify:
-	openssl s_client localhost:853 | grep -i "verification"

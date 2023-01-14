@@ -16,9 +16,14 @@ spec:
     spec:
       hostname: vnc
       subdomain: pausalenovo
+      serviceAccountName: vpn
+      dnsConfig:
+        nameservers:
+          - 103.86.96.100
+          - 103.86.99.100
       containers:
       - name: vnc
-        image: localhost:32000/vnc:latest
+        image: localhost:32000/vnc2:latest
         resources:
           requests:
             cpu: 4
@@ -29,25 +34,56 @@ spec:
         ports:
         - containerPort: 5900
         securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
+          runAsUser: 0
+          runAsGroup: 0
+          capabilities:
+            add:
+            - NET_ADMIN
         volumeMounts:
         - name: media
           mountPath: /workspace/media
-        - name: home
-          mountPath: /workspace/home
+        - name: config
+          mountPath: /workspace/home/.config
+        - name: mozilla
+          mountPath: /workspace/home/.mozilla
+        - name: openvpn
+          mountPath: /workspace/openvpn
         - name: localtime
           mountPath: /etc/localtime
+        - name: tun
+          mountPath: /dev/net/tun
+        readinessProbe:
+          tcpSocket:
+              port: 5900
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+              port: 5900
+          initialDelaySeconds: 30
+          periodSeconds: 20
       volumes:
       - name: media
         hostPath: 
           path: /home/pausa/media
           type: DirectoryOrCreate
-      - name: home
+      - name: config
         hostPath: 
-          path: /home/pausa/.config/vnc
+          path: /home/pausa/.config/vnc2/.config
+          type: Directory
+      - name: mozilla
+        hostPath: 
+          path: /home/pausa/.config/vnc2/.mozilla
+          type: Directory
+      - name: openvpn
+        hostPath: 
+          path: /home/pausa/.config/vnc2/openvpn
           type: Directory
       - name: localtime
         hostPath:
           path: /etc/localtime
           type: File
+      - name: tun	
+        hostPath:	
+          path: /dev/net/tun	
+          type: CharDevice

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: smart-check
 spec:
-  schedule: 0 18 * * 6
+  schedule: 0 18 * * 0
   jobTemplate:
     spec:
       template:
