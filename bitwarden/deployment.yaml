@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitwarden
+  labels:
+    app: bitwarden
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitwarden
+  template:
+    metadata:
+      labels:
+        app: bitwarden
+    spec:
+      hostname: bitwarden
+      subdomain: pausalenovo
+      containers:
+      - name: bitwarden
+        image: bitwarden/self-host:beta
+        ports:
+        - containerPort: 8443
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+        envFrom:
+        - secretRef:
+            name: bitwarden
+        env:
+         - name: BW_DOMAIN
+           value: madpausa.sytes.net
+         - name: BW_DB_PROVIDER
+           value: postgres
+         - name: BW_DB_SERVER
+           value: postgres
+         - name: BW_DB_PORT
+           value: "5432"
+         - name: BW_DB_DATABASE
+           value: bitwarden
+         - name: BW_DB_USERNAME
+           value: bitwarden_user
+         - name: BW_INSTALLATION_ID
+           value: cd6340c7-d558-4595-8669-afa00112280a
+         - name: BW_PORT_HTTPS	
+           value: "8443"
+         - name: BW_ENABLE_SSL	
+           value: "true"
+         - name: BW_SSL_CERT	
+           value: certs/fullchain.pem
+         - name: BW_SSL_KEY	
+           value: certs/privkey.pem
+         - name: globalSettings__mail__replyToEmail
+           value: pausatep@gmail.com
+         - name: globalSettings__mail__smtp__host
+           value: smtp.gmail.com
+         - name: globalSettings__mail__smtp__port
+           value: "587"
+         - name: globalSettings__mail__smtp__ssl
+           value: "true"
+         - name: globalSettings__disableUserRegistration
+           value: "true"
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /etc/bitwarden/certs
+        - name: config
+          mountPath: /workspace/home
+        - name: localtime
+          mountPath: /etc/localtime
+        #readinessProbe:
+        #  tcpSocket:
+        #      port: 8443
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 10
+        #livenessProbe:
+        #  tcpSocket:
+        #      port: 8443
+        #  initialDelaySeconds: 30
+        #  periodSeconds: 20
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/bitwarden
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: certs
+        hostPath: 
+          path: /home/pausa/Private
+          type: Directory

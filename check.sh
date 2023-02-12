@@ -39,10 +39,10 @@ end
 echo "Disks:"
 test_nas 'mount | grep -q usb0' 'External drive mounted'
 test_nas 'test_disk /home/pausa 90' 'More than 10% on main disk'
-test_nas 'test_disk /media/usb0/backup 90' 'More than 10% on external disk'
-echo
-echo "Backup"
-test_nas "test_date 3" 'Personal backup more recent than 3 days'
+#test_nas 'test_disk /media/usb0/backup 90' 'More than 10% on external disk'
+#echo
+#echo "Backup"
+#test_nas "test_date 3" 'Personal backup more recent than 3 days'
 echo
 echo "Kubernetes Cluster:"
 test_nas "microk8s.kubectl version" 'Kubernetes online'
@@ -51,16 +51,34 @@ test_nas "nc -w 5 -z localhost 19090" 'Dashboard online'
 test_nas "nc -w 5 -z localhost 19091" 'File browser online'
 test_nas "nc -w 5 -z localhost 139" 'Samba online'
 test_nas "nc -w 5 -z localhost 5900" 'Vnc online'
+test_nas "nc -w 5 -z localhost 8443" 'Bitwarden online'
 and test_nas 'test_vpn' 'VPN running for vnc pod'
 test_nas "nc -w 5 -z localhost 8448" 'Synapse online'
 echo
-echo "SMART:"
-test_nas "test_job smart-check Completed && test_job smart-test Completed" 'SMART checks running'
+echo "RAID status:"
+sudo mdadm --detail /dev/md0 | grep "Devices\|State"
+#echo
+#echo "SMART:"
+#test_nas "test_job smart-check Completed && test_job smart-test Completed" 'SMART checks running'
+#
+#echo "Short output:"
+#microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep --color=never /scanning
+#echo
+#microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep Extended | head -10
 
-echo "Short output:"
-microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep --color=never /scanning
 echo
-microk8s.kubectl get pod -oname | grep 'smart-check' | tail -1 | xargs microk8s.kubectl logs | grep Extended | head -10
-
 echo "Last logins:"
 last | head -10
+
+echo
+echo "stow last updates:"
+cd ~/git-repo/stow.git
+git log --format="%an %ad" pausa | head -1
+git log --format="%an %ad" mac/ing | head -1
+git log --format="%an %ad" t480/pausa | head -1
+
+echo
+echo "etc last updates:"
+cd ~/git-repo/etc.git
+git log --format="%an %ad" pausa | head -1
+git log --format="%an %ad" server | head -1

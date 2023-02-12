@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitwarden
+  labels:
+    app: bitwarden
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitwarden
+  template:
+    metadata:
+      labels:
+        app: bitwarden
+    spec:
+      hostname: bitwarden
+      subdomain: pausalenovo
+      containers:
+      - name: bitwarden
+        image: localhost:32000/bitwarden2:latest
+        ports:
+        - containerPort: 8443
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        env:
+         - name: BW_DOMAIN
+           value: madpausa.sytes.net
+         - name: BW_DB_PROVIDER
+           value: postgres
+         - name: BW_DB_SERVER
+           value: postgres
+         - name: BW_DB_PORT
+           value: 5432
+         - name: BW_DB_DATABASE
+           value: bitwarden
+             # TODO Secret
+         - name: BW_DB_PASSWORD
+           value: Viv4Bitwarden
+         - name: BW_DB_USERNAME
+           value: bitwarden_user
+         - name: BW_INSTALLATION_ID
+           value: cd6340c7-d558-4595-8669-afa00112280a
+             # TODO Secret
+         - name: BW_INSTALLATION_KEY
+           value: Pgvup4C8jl24UDPkMp4x
+         - name: BW_PORT_HTTPS	
+           value: 8443
+         - name: BW_ENABLE_SSL	
+           value: "true"
+         - name: BW_SSL_CERT	
+           value: cert.cert
+         - name: BW_SSL_KEY	
+           value: cert.key
+        volumeMounts:
+          # TODO maybe media not needed
+        - name: media
+          mountPath: /workspace/media
+        - name: config
+          mountPath: /workspace/home
+        - name: localtime
+          mountPath: /etc/localtime
+        readinessProbe:
+          tcpSocket:
+              port: 5900
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+              port: 5900
+          initialDelaySeconds: 30
+          periodSeconds: 20
+      volumes:
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: DirectoryOrCreate
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/bitwarden
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
