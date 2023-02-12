@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syncthing
+  labels:
+    app: syncthing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syncthing
+  template:
+    metadata:
+      labels:
+        app: syncthing
+    spec:
+      hostname: syncthing
+      subdomain: pausalenovo
+      containers:
+      - name: syncthing
+        image: syncthing/syncthing:latest
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: sync
+          mountPath: /var/syncthing
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: config
+        hostPath:
+          path: /home/pausa/.config/syncthing
+          type: DirectoryOrCreate
+      - name: sync
+        hostPath: 
+          path: /home/pausa/media/sync
+          type: Directory

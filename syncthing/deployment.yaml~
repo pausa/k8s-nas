@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synapse
+  labels:
+    app: synapse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synapse
+  template:
+    metadata:
+      labels:
+        app: synapse
+    spec:
+      hostname: synapse
+      subdomain: pausalenovo
+      containers:
+      - name: synapse
+        image: matrixdotorg/synapse:latest
+        ports:
+        - containerPort: 8008
+        env:
+        - name: UID
+          value: "1000"
+        - name: GID
+          value: "1001"
+        volumeMounts:
+        - name: config
+          mountPath: /data
+        - name: localtime
+          mountPath: /etc/localtime
+      - name: synapse-tls
+        image: localhost:32000/synapse-tls
+        ports:
+        - containerPort: 8448
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: certs
+          mountPath: /certs
+        livenessProbe:
+          httpGet:
+            path: /_matrix/client/versions
+            port: 8448
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 5
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: config
+        hostPath:
+          path: /home/pausa/.config/synapse
+          type: DirectoryOrCreate
+      - name: certs
+        hostPath: 
+          path: /home/pausa/Private
+          type: Directory
