@@ -5,7 +5,7 @@ metadata:
   labels:
     app: backupper
 spec:
-  schedule: 0 */6 * * *
+  schedule: 0 0 * * *
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -21,25 +21,61 @@ spec:
               runAsUser: 1000
               runAsGroup: 1000
             volumeMounts:
-            - name: src
-              mountPath: /src
+            - name: src-git-repo
+              mountPath: /src/git-repo
+            - name: src-castle
+              mountPath: /src/castle
+            - name: src-criminal
+              mountPath: /src/criminal
+            - name: src-ranma
+              mountPath: /src/ranma
+            - name: src-sync
+              mountPath: /src/sync
+            - name: src-db
+              mountPath: /src/db
+            - name: src-dot-config
+              mountPath: /src/dot-config
             - name: dst
               mountPath: /dst
             - name: localtime
               mountPath: /etc/localtime
             env:
             - name: SRC
-              value: /src/pausa
+              value: /src
             - name: DST
               value: /dst/backup
           volumes:
-          - name: src
+          - name: src-git-repo
             hostPath:
-              path: /home
+              path: /home/pausa/git-repo
+              type: Directory
+          - name: src-castle
+            hostPath:
+              path: /home/pausa/media/shows_ita/castle
+              type: Directory
+          - name: src-criminal
+            hostPath:
+              path: "/home/pausa/media/shows_ita/Criminal Minds"
+              type: Directory
+          - name: src-ranma
+            hostPath:
+              path: /home/pausa/media/shows_ita/Ranma
+              type: Directory
+          - name: src-sync
+            hostPath:
+              path: /home/pausa/media/sync
+              type: Directory
+          - name: src-db
+            hostPath:
+              path: /home/pausa/media/db
+              type: Directory
+          - name: src-dot-config
+            hostPath:
+              path: /home/pausa/.config
               type: Directory
           - name: dst
             hostPath:
-              path: /media/usb0
+              path: /media/sde1
               type: Directory
           - name: localtime
             hostPath:
