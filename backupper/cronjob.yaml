@@ -75,7 +75,7 @@ spec:
               type: Directory
           - name: dst
             hostPath:
-              path: /media/sde1
+              path: /media/usb0
               type: Directory
           - name: localtime
             hostPath:

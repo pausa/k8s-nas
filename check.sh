@@ -39,10 +39,10 @@ end
 echo "Disks:"
 test_nas 'mount | grep -q usb0' 'External drive mounted'
 test_nas 'test_disk /home/pausa 90' 'More than 10% on main disk'
-#test_nas 'test_disk /media/usb0/backup 90' 'More than 10% on external disk'
-#echo
-#echo "Backup"
-#test_nas "test_date 3" 'Personal backup more recent than 3 days'
+test_nas 'test_disk /media/usb0/backup 90' 'More than 10% on external disk'
+echo
+echo "Backup"
+test_nas "test_date 3" 'Personal backup more recent than 3 days'
 echo
 echo "Kubernetes Cluster:"
 test_nas "microk8s.kubectl version" 'Kubernetes online'
