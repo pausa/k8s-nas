@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-chatgpt
+  labels:
+    app: matrix-chatgpt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-chatgpt
+  template:
+    metadata:
+      labels:
+        app: matrix-chatgpt
+    spec:
+      hostname: matrix-chatgpt
+      subdomain: pausalenovo
+      containers:
+      - name: matrix-chatgpt
+        image: ghcr.io/matrixgpt/matrix-chatgpt-bot:latest
+        envFrom:
+        - secretRef:
+            name: matrix-chatgpt
+        volumeMounts:
+        - name: config
+          mountPath: /storage
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/matrix-chatgpt
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
