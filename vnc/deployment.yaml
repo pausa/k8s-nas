@@ -33,6 +33,17 @@ spec:
             memory: 8G
         ports:
         - containerPort: 5900
+          name: http
+          protocol: TCP
+        - containerPort: 4665
+          protocol: UDP
+          name: kad
+        - containerPort: 4672
+          protocol: UDP
+          name: kad-ext
+        - containerPort: 4662
+          protocol: TCP
+          name: kad-tcp
         securityContext:
           runAsUser: 0
           runAsGroup: 0

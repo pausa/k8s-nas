@@ -10,7 +10,7 @@ RUN mkdir /workspace \
  && usermod -d /workspace/home -m $(id -nu $UID) -G wheel,autologin
 
 # installing yay
-RUN pacman -Sy --noconfirm --needed git base-devel
+RUN pacman -Syyu --noconfirm --needed git base-devel
 RUN echo "Defaults:dev      !authenticate" >> /etc/sudoers
 RUN echo "dev   ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
@@ -50,3 +50,4 @@ ENTRYPOINT supervisord
 
 USER $UID
 RUN yay -Sy --noconfirm deluge-gtk
+RUN yay -Sy --noconfirm amule

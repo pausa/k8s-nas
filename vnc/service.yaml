@@ -11,3 +11,15 @@ spec:
     protocol: TCP
     port: 5900
     nodePort: 5900
+  - name: kad
+    protocol: UDP
+    port: 4665
+    nodePort: 4665
+  - name: kad-ext
+    protocol: UDP
+    port: 4672
+    nodePort: 4672
+  - name: kad-tcp
+    protocol: TCP
+    port: 4662
+    nodePort: 4662
