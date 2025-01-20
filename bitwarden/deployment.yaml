@@ -18,7 +18,7 @@ spec:
       subdomain: pausalenovo
       containers:
       - name: bitwarden
-        image: bitwarden/self-host:beta
+        image: bitwarden/self-host:2025.1.0-beta
         ports:
         - containerPort: 8443
         securityContext:
@@ -65,7 +65,7 @@ spec:
           readOnly: true
           mountPath: /etc/bitwarden/certs
         - name: config
-          mountPath: /workspace/home
+          mountPath: /etc/bitwarden/licenses
         - name: localtime
           mountPath: /etc/localtime
         #readinessProbe:

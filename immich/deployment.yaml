@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich
+  labels:
+    app: immich
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich
+  template:
+    metadata:
+      labels:
+        app: immich
+    spec:
+      hostname: immich
+      subdomain: pausalenovo
+      containers:
+      - name: immich-server
+        image: ghcr.io/immich-app/immich-server:v1.110.0
+        ports:
+        - containerPort: 3001
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        envFrom:
+        - secretRef:
+            name: immich
+        env:
+          - name: IMMICH_PORT
+            value: "3001"
+          - name: DB_USERNAME
+            value: postgres
+          - name: DB_DATABASE_NAME
+            value: immich
+          - name: DB_HOSTNAME
+            value: localhost
+          - name: REDIS_HOSTNAME
+            value: localhost
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /etc/immich/certs
+        - name: media
+          readOnly: true
+          mountPath: /media
+        - name: data
+          mountPath: /usr/src/app/upload
+        - name: localtime
+          readOnly: true
+          mountPath: /etc/localtime
+      - name: immich-machine-learning
+        image: ghcr.io/immich-app/immich-machine-learning:v1.105.1
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        envFrom:
+        - secretRef:
+            name: immich
+        volumeMounts:
+        - name: model-cache
+          mountPath: /cache
+        - name: localtime
+          mountPath: /etc/localtime
+      - name: immich-redis
+        image:  registry.hub.docker.com/library/redis:6.2-alpine@sha256:84882e87b54734154586e5f8abd4dce69fe7311315e2fc6d67c29614c8de2672
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+        volumeMounts:
+        - name: localtime
+          readOnly: true
+          mountPath: /etc/localtime
+      - name: immich-postgres
+        image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.1-rootless
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        envFrom:
+        - secretRef:
+            name: immich
+        env:
+          - name: POSTRGRES_USER
+            value: postgres
+          - name: POSTGRES_DB
+            value: immich
+          - name: POSTGRES_INITDB_ARGS
+            value: '--data-checksums'
+        command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
+        volumeMounts:
+        - name: db
+          mountPath: /var/lib/postgresql/data
+        - name: passwd
+          mountPath: /etc/passwd
+          readOnly: true
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: db
+        hostPath:
+          path: /home/pausa/media/db/immich
+          type: Directory
+      - name: data
+        hostPath: 
+          path: /home/pausa/.config/immich/data
+          type: Directory
+      - name: model-cache
+        hostPath: 
+          path: /home/pausa/.config/immich/model-cache
+          type: Directory
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: certs
+        hostPath: 
+          path: /home/pausa/Private
+          type: Directory
+      - name: passwd
+        hostPath:
+          path: /etc/passwd
+          type: File
+
