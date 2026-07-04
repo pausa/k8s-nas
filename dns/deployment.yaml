@@ -18,7 +18,8 @@ spec:
       subdomain: pausalenovo
       containers:
       - name: dns
-        image: localhost:32000/bind:latest
+        image: localhost:32000/dns:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 53
         env:

@@ -7,5 +7,8 @@ list-tls:
 verify-tls:
 	openssl s_client localhost:853 | grep -i "verification"
 
-dates-tls:
-	openssl s_client -connect localhost:853 -showcerts -servername madpausa.sytes.net | openssl x509 -noout -dates
+dates-tls-sytes-net:
+	openssl s_client -connect localhost:8448 -showcerts -servername madpausa.sytes.net | openssl x509 -noout -dates
+
+dates-tls-pausa-dev:
+	openssl s_client -connect localhost:443 -showcerts -servername tandoor.pausa.dev | openssl x509 -noout -dates

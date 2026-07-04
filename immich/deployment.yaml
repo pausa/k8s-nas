@@ -18,7 +18,7 @@ spec:
       subdomain: pausalenovo
       containers:
       - name: immich-server
-        image: ghcr.io/immich-app/immich-server:v1.110.0
+        image: ghcr.io/immich-app/immich-server:v3.0.1
         ports:
         - containerPort: 3001
         securityContext:
@@ -51,13 +51,16 @@ spec:
           readOnly: true
           mountPath: /etc/localtime
       - name: immich-machine-learning
-        image: ghcr.io/immich-app/immich-machine-learning:v1.105.1
+        image: ghcr.io/immich-app/immich-machine-learning:v3.0.1
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
         envFrom:
         - secretRef:
             name: immich
+        env:
+          - name: IMMICH_PORT
+            value: "3003"            
         volumeMounts:
         - name: model-cache
           mountPath: /cache
@@ -73,7 +76,7 @@ spec:
           readOnly: true
           mountPath: /etc/localtime
       - name: immich-postgres
-        image: registry.hub.docker.com/tensorchord/pgvecto-rs:pg14-v0.2.1-rootless
+        image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
@@ -87,7 +90,6 @@ spec:
             value: immich
           - name: POSTGRES_INITDB_ARGS
             value: '--data-checksums'
-        command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
         volumeMounts:
         - name: db
           mountPath: /var/lib/postgresql/data

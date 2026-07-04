@@ -8,5 +8,5 @@ spec:
   type: NodePort
   ports:
   - name: http
-    port: 8443
+    port: 8080
     nodePort: 54000

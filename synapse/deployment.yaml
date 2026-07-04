@@ -31,20 +31,11 @@ spec:
           mountPath: /data
         - name: localtime
           mountPath: /etc/localtime
-      - name: synapse-tls
-        image: localhost:32000/synapse-tls
-        ports:
-        - containerPort: 8448
-        volumeMounts:
-        - name: localtime
-          mountPath: /etc/localtime
-        - name: certs
-          mountPath: /certs
         livenessProbe:
           httpGet:
             path: /_matrix/client/versions
-            port: 8448
-            scheme: HTTPS
+            port: 8008
+            scheme: HTTP
           initialDelaySeconds: 30
           periodSeconds: 5
       volumes:

@@ -25,13 +25,13 @@ function test_files -a dir max_files
 end
 
 function test_job -a job_name expected_status
-	set job_status (microk8s.kubectl get pod | grep $job_name | tail -1 | awk '{print $3}')
+	set job_status (kubectl get pod | grep $job_name | tail -1 | awk '{print $3}')
 	return (test "$job_status" = $expected_status)
 end
 
 function test_vpn
 	set host_ip (curl -4 ifconfig.co 2> /dev/null)
-	set pod_ip (microk8s.kubectl exec service/vnc -- curl -4 ifconfig.co 2> /dev/null)
+	set pod_ip (kubectl exec service/vnc -- curl -4 ifconfig.co 2> /dev/null)
 	echo $host_ip $pod_ip
 	return (test "$host_ip" != "$pod_ip")
 end
@@ -45,7 +45,7 @@ echo "Backup"
 test_nas "test_date 3" 'Personal backup more recent than 3 days'
 echo
 echo "Kubernetes Cluster:"
-test_nas "microk8s.kubectl version" 'Kubernetes online'
+test_nas "kubectl version" 'Kubernetes online'
 test_nas "nc -w 5 -z localhost 32400" 'Plex online'
 test_nas "nc -w 5 -z localhost 19090" 'Dashboard online'
 test_nas "nc -w 5 -z localhost 19091" 'File browser online'
@@ -83,3 +83,13 @@ echo "etc last updates:"
 cd ~/git-repo/etc.git
 git log --format="%an %ad" pausa | head -1
 git log --format="%an %ad" server | head -1
+
+echo
+echo "check Borg integrity for t480"
+BORG_PASSPHRASE=(cat ~/Private/t480_borg) borg check ~/borg/t480
+BORG_PASSPHRASE=(cat ~/Private/t480_borg) borg list ~/borg/t480 | tail -3
+
+echo
+echo "check Borg integrity for nomad"
+BORG_PASSPHRASE=(cat ~/Private/nomad_borg) borg check ~/borg/nomad
+BORG_PASSPHRASE=(cat ~/Private/nomad_borg) borg list ~/borg/nomad | tail -3

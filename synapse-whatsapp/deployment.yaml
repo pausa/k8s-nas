@@ -16,9 +16,18 @@ spec:
     spec:
       hostname: synapse-whatsapp
       subdomain: pausalenovo
+      initContainers:
+        - name: initbusybox
+          image: busybox
+          securityContext:
+            privileged: true
+          command:
+          - sysctl
+          - -w
+          - net.ipv6.conf.all.disable_ipv6=1
       containers:
       - name: synapse-whatsapp
-        image: dock.mau.dev/mautrix/whatsapp:latest
+        image: dock.mau.dev/mautrix/whatsapp:v26.01
         ports:
         - containerPort: 29317
         env:
@@ -31,6 +40,9 @@ spec:
           mountPath: /data
         - name: localtime
           mountPath: /etc/localtime
+        - name: passwd
+          mountPath: /etc/passwd
+          readOnly: true
         livenessProbe:
           tcpSocket:
             port: 29317
@@ -45,3 +57,8 @@ spec:
         hostPath:
           path: /home/pausa/.config/synapse-whatsapp
           type: DirectoryOrCreate
+      - name: passwd
+        hostPath:
+          path: /etc/passwd
+          type: File
+

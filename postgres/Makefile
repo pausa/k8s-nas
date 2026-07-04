@@ -1,4 +1,4 @@
-KC=microk8s.kubectl
+KC=kubectl
 DEPLOYMENT=$(shell basename $(PWD))
 LOGFLAGS=-f
 

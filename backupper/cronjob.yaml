@@ -1,11 +1,11 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: backupper
   labels:
     app: backupper
 spec:
-  schedule: 0 0 * * *
+  schedule: 0 11 * * *
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -17,6 +17,7 @@ spec:
           containers:
           - name: backupper
             image: localhost:32000/backupper
+            imagePullPolicy: IfNotPresent
             securityContext:
               runAsUser: 1000
               runAsGroup: 1000

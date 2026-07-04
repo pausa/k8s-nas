@@ -47,15 +47,6 @@ spec:
           mountPath: /opt/recipes/db
         - name: localtime
           mountPath: /etc/localtime
-      - name: tandoor-tls
-        image: localhost:32000/tandoor-tls
-        ports:
-        - containerPort: 8443
-        volumeMounts:
-        - name: localtime
-          mountPath: /etc/localtime
-        - name: certs
-          mountPath: /certs
       volumes:
       - name: localtime
         hostPath:

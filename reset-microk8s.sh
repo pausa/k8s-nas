@@ -4,8 +4,8 @@
 
 function as_root {
   # installing
-  snap remove microk8s --purge
-  snap install microk8s --classic
+  # snap remove microk8s --purge
+  # snap install microk8s --classic
 
   # enabling plugins
   microk8s.enable storage dns registry ingress
@@ -20,4 +20,4 @@ function as_root {
 }
 
 sudo bash -c "$(declare -f as_root); as_root"
-./apply-all.sh
+# ./apply-all.sh

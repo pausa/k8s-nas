@@ -1,4 +1,4 @@
-KC=microk8s.kubectl
+KC=kubectl
 DEPLOYMENT=$(shell basename $(PWD))
 LOGFLAGS=--all-containers -f
 BRIDGES=$(wildcard ../synapse-*)
