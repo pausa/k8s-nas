@@ -1,0 +1,18 @@
+# default security policy
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: user
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - '*'

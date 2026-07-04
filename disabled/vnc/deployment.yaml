@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vnc
+  labels:
+    app: vnc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vnc
+  template:
+    metadata:
+      labels:
+        app: vnc
+    spec:
+      hostname: vnc
+      subdomain: pausalenovo
+      serviceAccountName: vpn
+      dnsConfig:
+        nameservers:
+          - 103.86.96.100
+          - 103.86.99.100
+      containers:
+      - name: vnc
+        image: localhost:32000/vnc2:latest
+        resources:
+          requests:
+            cpu: 4
+            memory: 8G
+          limits:
+            cpu: 4
+            memory: 8G
+        ports:
+        - containerPort: 5900
+          name: http
+          protocol: TCP
+        - containerPort: 4665
+          protocol: UDP
+          name: kad
+        - containerPort: 4672
+          protocol: UDP
+          name: kad-ext
+        - containerPort: 4662
+          protocol: TCP
+          name: kad-tcp
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          capabilities:
+            add:
+            - NET_ADMIN
+        volumeMounts:
+        - name: media
+          mountPath: /workspace/media
+        - name: config
+          mountPath: /workspace/home/.config
+        - name: mozilla
+          mountPath: /workspace/home/.mozilla
+        - name: openvpn
+          mountPath: /workspace/openvpn
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: tun
+          mountPath: /dev/net/tun
+        readinessProbe:
+          tcpSocket:
+              port: 5900
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+              port: 5900
+          initialDelaySeconds: 30
+          periodSeconds: 20
+      volumes:
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: DirectoryOrCreate
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/vnc2/.config
+          type: Directory
+      - name: mozilla
+        hostPath: 
+          path: /home/pausa/.config/vnc2/.mozilla
+          type: Directory
+      - name: openvpn
+        hostPath: 
+          path: /home/pausa/.config/vnc2/openvpn
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: tun	
+        hostPath:	
+          path: /dev/net/tun	
+          type: CharDevice

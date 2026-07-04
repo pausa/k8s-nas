@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      hostname: nextcloud
+      subdomain: pausalenovo
+      containers:
+      - name: nextcloud
+        image: nextcloud
+        ports:
+        - containerPort: 80
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+        envFrom:
+        - secretRef:
+            name: nextcloud
+        env:
+         - name: PHOTONEXTCLOUD_UPLOAD_NSFW
+           value: "true"
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /etc/nextcloud/certs
+        - name: config
+          mountPath: /var/www/html
+        - name: media
+          readOnly: true
+          mountPath: /var/www/html/data/admin/files/Media
+        - name: localtime
+          mountPath: /etc/localtime
+        #readinessProbe:
+        #  tcpSocket:
+        #      port: 8443
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 10
+        #livenessProbe:
+        #  tcpSocket:
+        #      port: 8443
+        #  initialDelaySeconds: 30
+        #  periodSeconds: 20
+      volumes:
+      - name: config
+        hostPath: 
+          path: /home/pausa/.config/nextcloud
+          type: Directory
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: certs
+        hostPath: 
+          path: /home/pausa/Private
+          type: Directory

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: neo4j
+spec:
+  selector:
+    app: neo4j
+  type: NodePort
+  ports:
+  - name: http
+    port: 7474
+    nodePort: 7474
+  - name: db
+    port: 7687
+    nodePort: 7687

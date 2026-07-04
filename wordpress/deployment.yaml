@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      hostname: wordpress
+      subdomain: pausalenovo
+      containers:
+      - name: wordpress
+        image: wordpress:6.8.1
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 1000
+        envFrom:
+        - secretRef:
+            name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: 127.0.0.1:3306
+        - name: WORDPRESS_DB_USER
+          value: wordpress
+        - name: WORDPRESS_DB_NAME
+          value: wordpress_db
+        - name: WORDPRESS_DEBUG
+          value: 'false'
+        volumeMounts:
+        - name: data
+          mountPath: /var/www/html
+        - name: certs
+          readOnly: true
+          mountPath: /etc/wordpress/certs
+        - name: media
+          readOnly: true
+          mountPath: /media
+        - name: localtime
+          readOnly: true
+          mountPath: /etc/localtime
+      - name: wordpress-mysql
+        image: mysql:8.0
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 1000
+        envFrom:
+        - secretRef:
+            name: wordpress
+        env:
+          - name: MYSQL_DATABASE
+            value: wordpress_db
+          - name: MYSQL_USER
+            value: wordpress
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: '1'
+        volumeMounts:
+        - name: db
+          mountPath: /var/lib/mysql
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: db
+        hostPath:
+          path: /home/pausa/media/db/wordpress
+          type: Directory
+      - name: data
+        hostPath: 
+          path: /home/pausa/.config/wordpress/data
+          type: Directory
+      - name: media
+        hostPath: 
+          path: /home/pausa/media
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: certs
+        hostPath: 
+          path: /home/pausa/Private
+          type: Directory
+      - name: passwd
+        hostPath:
+          path: /etc/passwd
+          type: File
+

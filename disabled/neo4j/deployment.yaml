@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j
+  labels:
+    app: neo4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      hostname: neo4j
+      subdomain: pausalenovo
+      containers:
+      - name: neo4j
+        image: neo4j:5
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        ports:
+        - containerPort: 7474
+        - containerPort: 7687
+        env:
+          - name: NEO4J_server_config_strict__validation_enabled
+            value: "false"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: passwd
+          mountPath: /etc/passwd
+          readOnly: true
+        - name: localtime
+          mountPath: /etc/localtime
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: data
+        hostPath:
+          path: /home/pausa/media/db/neo4j
+          type: DirectoryOrCreate
+      - name: passwd
+        hostPath:
+          path: /etc/passwd
+          type: File

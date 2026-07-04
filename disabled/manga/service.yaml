@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: manga
+spec:
+  selector:
+    app: manga
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 30666
+    nodePort: 30666

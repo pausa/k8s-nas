@@ -1,0 +1,49 @@
+caddy.pausa.dev:80 {
+
+}
+
+immich.pausa.dev {
+    reverse_proxy immich:3001
+}
+
+plex.pausa.dev {
+    reverse_proxy plex:32400
+}
+
+jellyfin.pausa.dev {
+    reverse_proxy jellyfin:8096
+}
+
+https://localhost:8448, https://madpausa.sytes.net:8448, https://synapse.pausa.dev:8448 {
+    reverse_proxy synapse-internal:8008
+}
+
+tandoor.pausa.dev {
+    reverse_proxy tandoor:8080
+}
+
+wordpress.pausa.dev {
+    reverse_proxy wordpress:80
+}
+
+
+cockpit.lan.pausa.dev:8886 {
+    tls internal
+    reverse_proxy 192.168.178.200:9090
+}
+
+dashboard.lan.pausa.dev:8886 {
+    tls internal
+    reverse_proxy 192.168.178.200:19090
+}
+
+syncthing.lan.pausa.dev:8886 {
+    tls internal
+    reverse_proxy syncthing:8384
+}
+
+files.lan.pausa.dev:8886 {
+    tls internal
+    reverse_proxy browser:8080
+}
+

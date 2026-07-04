@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manga
+  labels:
+    app: manga
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manga
+  template:
+    metadata:
+      labels:
+        app: manga
+    spec:
+      hostname: manga
+      subdomain: pausalenovo
+      containers:
+      - name: manga
+        image: localhost:32000/manga-dl:latest
+        ports:
+        - containerPort: 30666
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        volumeMounts:
+        - name: downloads
+          mountPath: /home/mangauser/manga
+        - name: localtime
+          mountPath: /etc/localtime
+        env:
+        - name: MANGA_PWD
+          valueFrom:
+            secretKeyRef:
+              name: manga
+              key: MANGA_PWD
+      volumes:
+      - name: downloads
+        hostPath: 
+          path: /home/pausa/media/books
+          type: DirectoryOrCreate
+      - name: tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File

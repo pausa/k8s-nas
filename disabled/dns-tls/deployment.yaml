@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns-tls
+  labels:
+    app: dns-tls
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dns-tls
+  template:
+    metadata:
+      labels:
+        app: dns-tls
+    spec:
+      hostname: dns-tls
+      subdomain: pausalenovo
+      containers:
+      - name: dns-tls
+        image: localhost:32000/dns-tls
+        ports:
+        - containerPort: 853
+        volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+        - name: certs
+          mountPath: /certs
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+      - name: certs
+        hostPath: 
+          path: /home/pausa/Private
+          type: Directory
+          

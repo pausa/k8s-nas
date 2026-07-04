@@ -1,0 +1,29 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostname: nextcloud
+          subdomain: pausalenovo
+          restartPolicy: Never
+          containers:
+          - name: nextcloud
+            image: curlimages/curl
+            command:
+              - 'http://nextcloud/cron.php'
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+          volumes:
+          - name: localtime
+            hostPath:
+              path: /etc/localtime
+              type: File
