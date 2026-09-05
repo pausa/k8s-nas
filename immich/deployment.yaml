@@ -18,7 +18,7 @@ spec:
       subdomain: pausalenovo
       containers:
       - name: immich-server
-        image: ghcr.io/immich-app/immich-server:v3.0.1
+        image: ghcr.io/immich-app/immich-server:v3.1.0
         ports:
         - containerPort: 3001
         securityContext:
@@ -51,7 +51,7 @@ spec:
           readOnly: true
           mountPath: /etc/localtime
       - name: immich-machine-learning
-        image: ghcr.io/immich-app/immich-machine-learning:v3.0.1
+        image: ghcr.io/immich-app/immich-machine-learning:v3.1.0
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000

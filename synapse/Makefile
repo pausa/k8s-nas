@@ -3,8 +3,8 @@ DEPLOYMENT=$(shell basename $(PWD))
 LOGFLAGS=--all-containers -f
 BRIDGES=$(wildcard ../synapse-*)
 
-ADMIN_USER=usegoodadmin
-ACCESS_TOKEN=usegoodtoken
+ADMIN_USER=@gooduser:serveraddress
+ACCESS_TOKEN=goodtoken
 CLEAN_USER=usegooduser
 
 deploy: service deployment
@@ -44,7 +44,10 @@ check-password:
 	$(KC) exec -it deployment/postgres -- psql synapse -c "select password_hash from users where name = '$(ADMIN_USER)'"
 
 update-password:
-	$(KC) exec -it deployment/postgres -- psql synapse -c "update users set password_hash = '"'password_hash'"' where name = '$(ADMIN_USER)'"
+	$(KC) exec -it deployment/postgres -- psql synapse -c "update users set password_hash = '"'passwordahash'"' where name = '$(ADMIN_USER)'"
+
+list-users:
+	$(KC) exec -it deployment/postgres -- psql synapse -c "select * from users where name not like '%telegram%' and name not like '%whatsapp%' and name not like '%instagram%' and name not like '%googlechat%' limit 10"
 
 set-admin:
 	$(KC) exec -it deployment/postgres -- psql synapse -c "update users set admin = 1 where name = '$(ADMIN_USER)'"
@@ -55,10 +58,16 @@ unset-admin:
 
 login-admin:
 	$(KC) exec -it deployment/synapse -c synapse -- curl -XPOST \
-		-d '{"type":"m.login.password", "user":"$(ADMIN_USER)", "password":"the real password"}' \
+		-d '{"type":"m.login.password", "user":"$(ADMIN_USER)", "password":"properpassword"}' \
 		"http://localhost:8008/_matrix/client/r0/login"
 
 delete-media:
 	$(KC) exec -it deployment/synapse -c synapse -- curl -XDELETE \
 		-H "Authorization: Bearer $(ACCESS_TOKEN)" \
 		"http://localhost:8008/_synapse/admin/v1/users/$(CLEAN_USER)/media"
+
+delete-all-media:
+	$(KC) exec -it deployment/synapse -c synapse -- curl \
+		--header "Authorization: Bearer $(ACCESS_TOKEN)" \
+		--request POST \
+		"http://localhost:8008/_synapse/admin/v1/media/madpausa.sytes.net/delete?before_ts=$$(date +%s%3N)"
