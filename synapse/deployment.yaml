@@ -18,7 +18,7 @@ spec:
       subdomain: pausalenovo
       containers:
       - name: synapse
-        image: matrixdotorg/synapse:latest
+        image: matrixdotorg/synapse:v1.161.0
         ports:
         - containerPort: 8008
         env:

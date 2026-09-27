@@ -19,7 +19,7 @@ https://localhost:8448, https://madpausa.sytes.net:8448, https://synapse.pausa.d
 }
 
 tandoor.pausa.dev {
-    reverse_proxy tandoor:8080
+    reverse_proxy tandoor:80
 }
 
 wordpress.pausa.dev {

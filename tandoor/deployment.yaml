@@ -21,9 +21,9 @@ spec:
         fsGroup: 1000
       containers:
       - name: tandoor
-        image: vabene1111/recipes:1.5.24
+        image: vabene1111/recipes:2.6.15
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
         - name: UID
           value: "1000"
@@ -35,6 +35,8 @@ spec:
           value: "/opt/recipes/db/databse.db"
         - name: CSRF_TRUSTED_ORIGINS
           value: "https://madpausa.sytes.net:54000"
+        - name: ALLOWED_HOSTS
+          value: "tandoor.pausa.dev"
         envFrom:
         - secretRef:
             name: tandoor
